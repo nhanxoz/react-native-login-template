@@ -36,7 +36,13 @@ module.exports = {
     'global-require': 'off',
     'jsx-a11y/media-has-caption': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
-    //
+    //,
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
     'max-len': [
       'warn',
       {
