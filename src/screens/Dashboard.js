@@ -1,4 +1,5 @@
 import React from 'react'
+import { Text } from 'react-native'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
 import Header from '../components/Header'
@@ -11,20 +12,13 @@ export default function Dashboard({ navigation }) {
       <Logo />
       <Header>Let’s start</Header>
       <Paragraph>
-        Your amazing app starts here. Open you favorite code editor and start
-        editing this project.
+        Lấy được token <Text>41234iou132o4u1324</Text>
       </Paragraph>
-      <Button
-        mode="outlined"
-        onPress={() =>
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'StartScreen' }],
-          })
-        }
-      >
-        Logout
+      <Button mode="outlined" onPress={() => navigation.navigate('AllProduct')}>
+        ok
       </Button>
+      <Button onPress={() => navigation.navigate('Menu')}>Menu</Button>
+      <Button onPress={() => navigation.navigate('Blogs')}>Blog</Button>
     </Background>
   )
 }

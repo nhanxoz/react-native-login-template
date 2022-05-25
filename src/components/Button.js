@@ -11,7 +11,7 @@ export default function Button({ mode, style, ...props }) {
         mode === 'outlined' && { backgroundColor: theme.colors.surface },
         style,
       ]}
-      labelStyle={styles.text}
+      labelStyle={mode === 'outlined' && { color: '#f59842' }}
       mode={mode}
       {...props}
     />
@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginVertical: 10,
     paddingVertical: 2,
+    backgroundColor: '#f59842',
   },
   text: {
     fontWeight: 'bold',
