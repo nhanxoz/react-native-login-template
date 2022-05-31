@@ -1,6 +1,15 @@
 import React from 'react'
 import { Provider } from 'react-native-paper'
-import { Image, Button } from 'react-native'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import {
+  Image,
+  Button,
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+} from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -21,10 +30,29 @@ import Cart from './src/screens/Cart'
 import Menu from './src/screens/Menu'
 import Blogs from './src/screens/Blogs'
 import Payment from './src/screens/Payment'
+import Profile from './src/screens/Profile'
+import ProfileDetail from './src/screens/ProfileDetails'
+import FoodDetail from './src/screens/FoodDetail'
+import UpdateProfile from './src/screens/UpdateProfile'
 
 const Stack = createStackNavigator()
 const StackHistory = createStackNavigator()
 const StackProfile = createStackNavigator()
+const SBlog = createStackNavigator()
+const MDashboard = () => (
+  <SBlog.Navigator initialRouteName="Dashboard">
+    <SBlog.Screen
+      options={{ tabBarLabel: 'Chào mừng tới thiên đường ẩm thực' }}
+      name="Dashboard"
+      component={Dashboard}
+    />
+    <SBlog.Screen
+      options={{ tabBarLabel: 'Blogs' }}
+      name="Blogs"
+      component={Blogs}
+    />
+  </SBlog.Navigator>
+)
 const StackCart = createStackNavigator()
 const CartPaymentStack = () => (
   <StackCart.Navigator initialRouteName="History">
@@ -41,47 +69,73 @@ const CartPaymentStack = () => (
   </StackCart.Navigator>
 )
 const MenuStack = createStackNavigator()
+
 const BottomTab = createBottomTabNavigator()
 const ProfileInfoStack = () => (
   <StackProfile.Navigator initialRouteName="History">
     <StackProfile.Screen
-      options={{ tabBarLabel: 'History' }}
-      name="History"
-      component={HistoryOrder}
+      options={{ tabBarLabel: 'Profile' }}
+      name="Profile"
+      component={Profile}
     />
     <StackProfile.Screen
-      options={{ tabBarLabel: 'HistoryDetail' }}
-      name="HistoryDetail"
-      component={HistoryDetail}
+      navigationOption={{ tabBarLabel: 'ProfileDetail' }}
+      name="Chi tiết thông tin cá nhân"
+      component={ProfileDetail}
+    />
+    <StackProfile.Screen
+      options={{ tabBarLabel: 'UpdateProfile' }}
+      name="Chỉnh sửa thông tin"
+      component={UpdateProfile}
     />
   </StackProfile.Navigator>
 )
 
-const MenuFoodStack = () => (
-  <MenuStack.Navigator initialRouteName="Menu">
-    <MenuStack.Screen
-      options={{
-        tabBarLabel: 'Menu',
+const MenuFoodStack = () => {
+  const [text, onChangeText] = React.useState(null)
+  return (
+    <MenuStack.Navigator initialRouteName="Menu">
+      <MenuStack.Screen
+        options={{
+          tabBarLabel: 'Menu',
 
-        headerRight: () => (
-          <Button
-            onPress={() => alert('This is a button!')}
-            title="Blog"
-            color="#000"
-            border
-          />
-        ),
-      }}
-      name="Menu"
-      component={HistoryOrder}
-    />
-    <MenuStack.Screen
-      options={{ tabBarLabel: 'HistoryDetail' }}
-      name="HistoryDetail"
-      component={HistoryDetail}
-    />
-  </MenuStack.Navigator>
-)
+          headerRight: () => (
+            <View style={{ display: 'flex', flexDirection: 'row' }}>
+              <TextInput
+                style={styles.input}
+                onChangeText={onChangeText}
+                placeholder="nhập tên món"
+                value={text}
+              />
+              <TouchableOpacity
+                style={{
+                  marginVertical: 10,
+                  marginRight: 5,
+                  padding: 5,
+                  backgroundColor: '#2cfc03',
+                  justifyContent: 'center',
+                }}
+                onPress={() => alert('This is a button!')}
+                title="Tìm"
+                border
+              >
+                <Text>Tìm kiếm</Text>
+              </TouchableOpacity>
+            </View>
+          ),
+        }}
+        name="Menu"
+        component={Menu}
+      />
+      <MenuStack.Screen
+        options={{ tabBarLabel: 'FoodDetail' }}
+        name="FoodDetail"
+        component={FoodDetail}
+      />
+    </MenuStack.Navigator>
+  )
+}
+
 const HistoryOrderStack = () => (
   <StackHistory.Navigator initialRouteName="History">
     <StackHistory.Screen
@@ -106,22 +160,42 @@ const TabNavigator = () => (
     }}
   >
     <BottomTab.Screen
-      options={{ tabBarLabel: 'Home' }}
+      options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: ({ color, size }) => (
+          <MaterialCommunityIcons name="home" color={color} size={size} />
+        ),
+      }}
       name="Dashboard"
-      component={Dashboard}
+      component={MDashboard}
     />
     <BottomTab.Screen
-      options={{ tabBarLabel: 'Menu' }}
+      options={{
+        tabBarLabel: 'Menu',
+        tabBarIcon: ({ color, size }) => (
+          <MaterialCommunityIcons name="menu" color={color} size={size} />
+        ),
+      }}
       name="Menu"
       component={MenuFoodStack}
     />
     <BottomTab.Screen
-      options={{ tabBarLabel: 'Cart' }}
+      options={{
+        tabBarLabel: 'Cart',
+        tabBarIcon: ({ color, size }) => (
+          <MaterialCommunityIcons name="cart" color={color} size={size} />
+        ),
+      }}
       name="Cart"
       component={CartPaymentStack}
     />
     <BottomTab.Screen
-      options={{ tabBarLabel: 'Profile' }}
+      options={{
+        tabBarLabel: 'Profile',
+        tabBarIcon: ({ color, size }) => (
+          <MaterialCommunityIcons name="account" color={color} size={size} />
+        ),
+      }}
       name="Profile"
       component={ProfileInfoStack}
     />
@@ -144,7 +218,7 @@ export default function App() {
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
             <Stack.Screen name="AllProduct" component={AllProduct} />
             <Stack.Screen name="Menu" component={Menu} />
-            <Stack.Screen name="Blogs" component={Blogs} />
+
             <Stack.Screen
               name="ResetPasswordScreen"
               component={ResetPasswordScreen}
@@ -155,3 +229,11 @@ export default function App() {
     </AuthContextProvider>
   )
 }
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+})
