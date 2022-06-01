@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Text,
   View,
@@ -8,7 +8,9 @@ import {
   StatusBar,
   StyleSheet,
 } from 'react-native'
+import Axios from 'axios'
 import CartItem2 from '../components/CartItem2'
+import { AuthContext } from '../context/AuthContext'
 
 const DATA = [
   {
@@ -60,13 +62,29 @@ const DATA = [
     title: 'Third Item',
   },
 ]
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-  <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
-    <Text style={[styles.title, textColor]}>{item.title}</Text>
-  </TouchableOpacity>
-)
+
 export default function Cart({ navigation }) {
   const [selectedId, setSelectedId] = useState(null)
+  const { authState } = React.useContext(AuthContext)
+  const [list, setList] = useState(null)
+  const [carts, setCarts] = useState(null)
+  useEffect(() => {
+    console.log(authState)
+    Axios.get(`http://10.0.2.2:5000/api/user/cart?id=${authState.user['_W']}`)
+      .then((r) => r.data.data)
+      .then((d) => setCarts(d))
+  }, [])
+
+  const deleteItem = (item) => {
+    setCarts(carts.filter((i) => i.ID !== item.ID))
+  }
+  const tang = (item, sl) => {
+    const newcart = carts
+    const ide = newcart.findIndex((obj) => obj.ID === item.ID)
+    newcart[ide].Quantity = item.Quantity + sl < 1 ? 1 : item.Quantity + sl
+    console.log(newcart)
+    setCarts([...newcart])
+  }
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff'
@@ -75,6 +93,8 @@ export default function Cart({ navigation }) {
     return (
       <CartItem2
         item={item}
+        delet={deleteItem}
+        tang={tang}
         onPress={() => setSelectedId(item.id)}
         backgroundColor={{ backgroundColor }}
         textColor={{ color }}
@@ -85,19 +105,21 @@ export default function Cart({ navigation }) {
     <View style={{ flex: 1 }}>
       <View style={{ flex: 4 }}>
         <FlatList
-          data={DATA}
+          data={carts}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          extraData={selectedId}
+          keyExtractor={(item) => item.ID}
         />
       </View>
       <View style={{ flex: 1 }}>
-        <Text>Tổng tiền: </Text>
+        <Text>
+          Tổng tiền:{' '}
+          {carts.reduce((a, b) => a + b.PromotionPrice * b.Quantity, 0)} VND
+        </Text>
         <Button
           onPress={() => {
             navigation.navigate('Menu', { screen: 'HistoryDetail' })
           }}
-          title="OK"
+          title="Tiếp tục chọn món"
         >
           OK324
         </Button>
@@ -105,7 +127,8 @@ export default function Cart({ navigation }) {
           onPress={() => {
             navigation.navigate('Payment')
           }}
-          title="OK"
+          title="Thanh toán"
+          color="red"
         >
           OK324
         </Button>

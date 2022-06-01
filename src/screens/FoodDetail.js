@@ -3,19 +3,22 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 
 import Carousel from 'react-native-banner-carousel'
 
-const images = [
-  require('../assets/banner/271691.jpg'),
-  require('../assets/banner/271841.jpg'),
-  require('../assets/banner/271864.jpg'),
-]
-const renderPage = (image, index) => {
-  return (
-    <View key={index}>
-      <Image style={{ width: 500, height: 300 }} source={image} />
-    </View>
-  )
-}
-export default function FoodDetail() {
+
+
+export default function FoodDetail({ route }) {
+  const { item } = route.params
+  const images = [
+    `http://10.0.2.2:5000/Content/food/${item.Alias}_1.jpg`,
+    `http://10.0.2.2:5000/Content/food/${item.Alias}_2.jpg`,
+    `http://10.0.2.2:5000/Content/food/${item.Alias}_3.jpg`,
+  ]
+  const renderPage = (image, index) => {
+    return (
+      <View key={index}>
+        <Image style={{ width: 500, height: 300 }} source={{ uri: image }} />
+      </View>
+    )
+  }
   return (
     <View style={styles.container}>
       <View style={styles.carousel}>
@@ -26,8 +29,14 @@ export default function FoodDetail() {
       <View
         style={{ flex: 3, margin: 10, backgroundColor: '#fff', padding: 10 }}
       >
-        <View style={{ borderBottomColor: 'black', borderBottomWidth: 1 }}>
-          <Text style={{ fontSize: 30 }}>Mý Ý Spaghetti</Text>
+        <View
+          style={{
+            borderBottomColor: 'black',
+            borderBottomWidth: 1,
+            padding: 10,
+          }}
+        >
+          <Text style={{ fontSize: 30 }}>{item.Name}</Text>
           <Text
             style={{
               fontSize: 20,
@@ -35,10 +44,10 @@ export default function FoodDetail() {
               textDecorationStyle: 'solid',
             }}
           >
-            Giá gốc: 89000VNĐ
+            Giá gốc: {item.OriginPrice}VNĐ
           </Text>
           <Text style={{ fontSize: 20, color: 'red' }}>
-            Giá khuyến mãi: 64000VNĐ
+            Giá khuyến mãi: {item.PromotionPrice}VNĐ
           </Text>
         </View>
         <TouchableOpacity
@@ -62,7 +71,7 @@ export default function FoodDetail() {
           style={{
             backgroundColor: 'primary',
             alignItems: 'center',
-            padding: 10,
+            padding: 2,
             borderRadius: 10,
             margin: 5,
           }}
@@ -70,7 +79,7 @@ export default function FoodDetail() {
             alert('Không có comment nào cạ')
           }}
         >
-          <Text style={{ fontSize: 18 }}>Xem Comment</Text>
+          <Text style={{ fontSize: 18 }}>Bình luận</Text>
         </TouchableOpacity>
       </View>
     </View>

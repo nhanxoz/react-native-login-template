@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   FlatList,
   SafeAreaView,
@@ -7,58 +7,41 @@ import {
   Text,
   TouchableOpacity,
   View,
+  TextInput,
 } from 'react-native'
+import Axios from 'axios'
 import CartItem from '../components/CartItem'
 import CartegoryItem from '../components/CategoryItem'
 
-const DATA = [
+const requestOptions = {
+  method: 'GET',
+}
+
+const Category = [
   {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
+    id: 0,
+    title: 'Tất cả',
+    color: '#ee4035',
   },
   {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
+    id: 1,
+    title: 'Bữa sáng',
+    color: '#f37736',
   },
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
+    id: 2,
+    title: 'Tráng miệng',
+    color: '#fdf498',
   },
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
+    id: 3,
+    title: 'Bữa tối',
+    color: '#7bc043',
   },
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d6',
-    title: 'Third Item',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28b1',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f62',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d4',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d45',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e293',
-    title: 'Third Item',
+    id: 4,
+    title: 'Đồ uống',
+    color: '#0392cf',
   },
 ]
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
@@ -68,18 +51,39 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 )
 export default function Menu({ navigation }) {
   const [selectedId, setSelectedId] = useState(null)
-
+  const [text, onChangeText] = useState(null)
+  const [DATA, setData] = useState(null)
+  const [DATA_2, setData2] = useState(null)
+  const [cat, setCat] = useState(0)
+  useEffect(() => {
+    Axios.get('http://10.0.2.2:5000/api/user/food')
+      .then((data1) => {
+        setData(data1.data.data)
+      })
+      .catch((error) => console.error(error))
+  }, [])
+  useEffect(
+    () =>
+      cat === 0
+        ? Axios.get('http://10.0.2.2:5000/api/user/food').then((data1) => {
+            setData2(data1.data.data)
+          })
+        : setData2(DATA.filter((i) => i.CategoryID === cat)),
+    [cat]
+  )
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff'
-    const color = item.id === selectedId ? 'white' : 'black'
-
     return (
-      <CartegoryItem
-        item={item}
-        onPress={() => setSelectedId(item.id)}
-        backgroundColor={{ backgroundColor }}
-        textColor={{ color }}
-      />
+      <TouchableOpacity
+        onPress={() => {
+          setCat(item.id)
+        }}
+      >
+        <CartegoryItem
+          title={item.title}
+          backgroundColor={item.color}
+          color={item.id == 2 ? '#000' : '#fff'}
+        />
+      </TouchableOpacity>
     )
   }
   const renderItem2 = ({ item }) => {
@@ -89,7 +93,7 @@ export default function Menu({ navigation }) {
     return (
       <CartItem
         onPress={() => {
-          navigation.navigate('FoodDetail')
+          navigation.navigate('FoodDetail', { item })
         }}
         item={item}
         backgroundColor={{ backgroundColor }}
@@ -100,20 +104,43 @@ export default function Menu({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flex: 1 }}>
+      <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeText}
+          placeholder="nhập tên món"
+          value={text}
+        />
+        <TouchableOpacity
+          style={{
+            marginVertical: 10,
+            marginRight: 5,
+            padding: 5,
+            backgroundColor: '#2cfc03',
+            justifyContent: 'center',
+            borderRadius: 10,
+          }}
+          onPress={() => alert('This is a button!')}
+          title="Tìm"
+          border
+        >
+          <Text>Tìm kiếm</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ flex: 2 }}>
         <FlatList
-          data={DATA}
+          data={Category}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           extraData={selectedId}
           horizontal
         />
       </View>
-      <View style={{ flex: 2 }}>
+      <View style={{ flex: 4 }}>
         <FlatList
-          data={DATA}
+          data={DATA_2}
           renderItem={renderItem2}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.ID}
           extraData={selectedId}
           numColumns={2}
         />

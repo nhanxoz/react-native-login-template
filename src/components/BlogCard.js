@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet } from 'react-native'
 
-export default function BlogCard() {
+export default function BlogCard({ item }) {
   return (
     <View style={styles.container}>
       <View>
@@ -11,7 +11,7 @@ export default function BlogCard() {
         />
       </View>
       <View style={styles.text}>
-        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Bữa sáng</Text>
+        <Text style={{ color: '#fff', fontWeight: 'bold' }}>{item.Name}</Text>
       </View>
     </View>
   )

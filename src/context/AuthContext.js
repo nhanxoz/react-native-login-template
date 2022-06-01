@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useEffect } from 'react'
 import axios from 'axios'
+
 import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from './constant'
 
 import setAuthToken from '../utils/setAuthToken'
@@ -16,54 +17,49 @@ const AuthContextProvider = ({ children }) => {
   })
 
   // Authenticate user
-  const loadUser = async () => {
-    // if (localStorage[LOCAL_STORAGE_TOKEN_NAME]) {
-    //   setAuthToken(localStorage[LOCAL_STORAGE_TOKEN_NAME])
-    // }
-
-    try {
-      const response = await fetch(`${apiUrl}/Product`)
-    } catch (error) {
-      //   localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME)
-      setAuthToken(null)
-      dispatch({
-        type: 'SET_AUTH',
-        payload: { isAuthenticated: true, user: null },
-      })
-    }
-  }
-
-  useEffect(() => {
-    loadUser()
-  }, [])
 
   // Login
   const loginUser = async ({ email, password }) => {
     try {
-      const form = new FormData()
-      form.append('UserName', email.value)
-      form.append('Passwrod', password.value)
-      form.append('RememberMe', true)
+      const myHeaders = new Headers()
+      myHeaders.append('Content-Type', 'application/json')
 
-      let json1 = {}
-      await fetch(`${apiUrl}/Users/authenticate`, {
-        method: 'POST',
-        headers: {
-          Accept: '*/*',
-          'Content-Type': 'multipart/form-data',
-        },
-        body: form,
-      }).then((response) => {
-        response.json().then((json) => {
-          json1 = json
-        })
+      const raw = JSON.stringify({
+        Email: email.value,
+        Password: password.value,
       })
+      console.log(raw)
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow',
+        credentials: 'include',
+      }
 
-      await loadUser()
-      return { ...json1, success: true }
+      return fetch(`${apiUrl}/Account/Login`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          dispatch({
+            type: 'SET_AUTH',
+            payload: {
+              isAuthenticated: true,
+              user: axios
+                .get('http://10.0.2.2:5000/api/user?email=Nhan9ckl1@gmail.com')
+                .then((data1) => {
+                  console.log(data1.data.data[0].Id)
+                  return data1.data.data[0].Id
+                })
+                .catch((error) => console.error(error)),
+            },
+          })
+          console.log(authState)
+          return result
+        })
+        .catch((error) => console.log('error', error))
     } catch (error) {
       if (error) return error
-      return { success: true }
+      return { success: false }
     }
   }
 
@@ -77,8 +73,6 @@ const AuthContextProvider = ({ children }) => {
           response.data.accessToken
         )
 
-      await loadUser()
-
       return response.data
     } catch (error) {
       if (error.response.data) return error.response.data
@@ -88,7 +82,6 @@ const AuthContextProvider = ({ children }) => {
 
   // Logout
   const logoutUser = () => {
-    localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME)
     dispatch({
       type: 'SET_AUTH',
       payload: { isAuthenticated: false, user: null },

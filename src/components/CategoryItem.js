@@ -1,9 +1,20 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet } from 'react-native'
 
-export default function CartegoryItem() {
+export default function CartegoryItem({ title, backgroundColor, color }) {
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        backgroundColor,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 20,
+        alignItems: 'center',
+
+        margin: 10,
+        borderRadius: 10,
+      }}
+    >
       <View>
         <Image
           style={styles.image}
@@ -11,7 +22,7 @@ export default function CartegoryItem() {
         />
       </View>
       <View style={styles.text}>
-        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Bữa sáng</Text>
+        <Text style={{ color: color, fontWeight: 'bold' }}>{title}</Text>
       </View>
     </View>
   )

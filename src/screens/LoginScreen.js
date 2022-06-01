@@ -15,15 +15,25 @@ import { AuthContext } from '../context/AuthContext'
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
+
   const { loginUser } = useContext(AuthContext)
   const login = async () => {
     try {
-      console.log('ok3')
-      // const loginData = await loginUser({ email, password })
-      const loginData = { success: true, token: '413241324324' }
-      loginData.token = '413241324324'
-      console.log(loginData)
-      if (loginData.success && loginData.token !== undefined) {
+      const loginData = await loginUser({ email, password })
+
+      if (loginData.success && loginData.accessToken !== null) {
+        const requestOptions = {
+          method: 'GET',
+          redirect: 'follow',
+        }
+
+        fetch(
+          'https://localhost:44396/api/user?email=Nhan9ckl1@gmail.com',
+          requestOptions
+        )
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.log('error', error))
         navigation.reset({
           index: 0,
           routes: [
@@ -38,12 +48,12 @@ export default function LoginScreen({ navigation }) {
   }
   const onLoginPressed = () => {
     const passwordError = passwordValidator(password.value)
-    console.log('OK1')
+
     if (passwordError) {
       setPassword({ ...password, error: passwordError })
       return
     }
-    console.log('ok2')
+
     login()
   }
 

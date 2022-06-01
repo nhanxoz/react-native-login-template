@@ -2,18 +2,27 @@ import React from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 
 const renderCost = (value) => value.toLocaleString('vi-VN')
-export default function CartItem({ onPress }) {
+export default function CartItem({ item, onPress }) {
   return (
     <TouchableOpacity style={styles.container} onPress={() => onPress()}>
       <View>
-        <Image style={styles.image} source={require('../assets/omelete.jpg')} />
+        <Image
+          style={styles.image}
+          source={{
+            uri: `http://10.0.2.2:5000/Content/food/${item.Alias}_1.jpg`,
+          }}
+        />
       </View>
       <View style={styles.text}>
-        <Text>Trứng ốp</Text>
+        <Text>
+          {item.Name.length > 17
+            ? item.Name.substring(0, 17) + '...'
+            : item.Name}
+        </Text>
       </View>
       <View style={{ marginTop: 10, color: 'red' }}>
         <Text style={{ color: 'red', fontSize: 20 }}>
-          {renderCost(69000)} VND
+          {renderCost(item.PromotionPrice)} VND
         </Text>
       </View>
     </TouchableOpacity>

@@ -40,7 +40,6 @@ export default function UpdateProfile({ navigation }) {
   }
   return (
     <Background>
-      <BackButton goBack={navigation.goBack} />
       <Logo />
       <Header>Chỉnh sửa thông tin</Header>
       <TextInput

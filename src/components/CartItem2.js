@@ -8,20 +8,23 @@ import {
   TextInput,
 } from 'react-native'
 
-export default function CartItem2() {
-  const [number, onChangeNumber] = React.useState(null)
+export default function CartItem2({ item, delet, tang }) {
+  const [number, onChangeNumber] = React.useState(String(item.Quantity))
+
   return (
     <View style={styles.container}>
       <TouchableOpacity>
         <Image
           style={{ width: 100, height: 100 }}
-          source={require('../assets/omelete.jpg')}
+          source={{
+            uri: `http://10.0.2.2:5000/Content/food/${item.Alias}_1.jpg`,
+          }}
         />
       </TouchableOpacity>
       <View style={styles.content}>
-        <Text>Trứng ốp la</Text>
+        <Text>{item.Name}</Text>
         <View>
-          <Text>69000 VND</Text>
+          <Text>{item.PromotionPrice} VND</Text>
         </View>
         <View
           style={{
@@ -30,21 +33,24 @@ export default function CartItem2() {
             flexDirection: 'row',
           }}
         >
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => tang(item, -1)}
+          >
             <Text style={styles.text}>-</Text>
           </TouchableOpacity>
           <TextInput
             style={styles.input}
             onChangeText={onChangeNumber}
-            value={number}
+            value={String(item.Quantity)}
             keyboardType="numeric"
           />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => tang(item, 1)}>
             <Text style={styles.text}>+</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={styles.del}>
+      <TouchableOpacity style={styles.del} onPress={() => delet(item)}>
         <Text>Delete</Text>
       </TouchableOpacity>
     </View>

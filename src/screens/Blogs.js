@@ -9,6 +9,7 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native'
+import axios from 'axios'
 import { WebView } from 'react-native-webview'
 import BlogCard from '../components/BlogCard'
 
@@ -67,9 +68,19 @@ const DATA = [
 ]
 export default function Blogs() {
   const [isShowWebView, setIsShowWebView] = React.useState(false)
+  const [blog, setBlog] = React.useState(null)
+  React.useEffect(() => {
+    axios
+      .get('http://10.0.2.2:5000/api/blog')
+      .then((res) => setBlog(res.data.data))
+  }, [])
   const [selectedId, setSelectedId] = React.useState(null)
   const renderItem = ({ item }) => {
-    return <BlogCard />
+    return (
+      <TouchableOpacity onPress={() => setSelectedId(item.ID)}>
+        <BlogCard item={item} />
+      </TouchableOpacity>
+    )
   }
   return (
     <View style={styles.container}>
@@ -79,9 +90,9 @@ export default function Blogs() {
       /> */}
       <View style={{ flex: 2 }}>
         <FlatList
-          data={DATA}
+          data={blog}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.ID}
           extraData={selectedId}
           horizontal
         />
@@ -104,7 +115,7 @@ export default function Blogs() {
           <WebView
             style={{ height: height, width: width }}
             containerStyle={{ height: height, width: width }}
-            source={{ html: '<h1>Hello world</h1>' }}
+            source={{ html: blog[selectedId].Content }}
             renderError={(error) => (
               <View style={{ flex: 1 }}>
                 <Text>{error}</Text>

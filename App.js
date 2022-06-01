@@ -99,30 +99,7 @@ const MenuFoodStack = () => {
         options={{
           tabBarLabel: 'Menu',
 
-          headerRight: () => (
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <TextInput
-                style={styles.input}
-                onChangeText={onChangeText}
-                placeholder="nhập tên món"
-                value={text}
-              />
-              <TouchableOpacity
-                style={{
-                  marginVertical: 10,
-                  marginRight: 5,
-                  padding: 5,
-                  backgroundColor: '#2cfc03',
-                  justifyContent: 'center',
-                }}
-                onPress={() => alert('This is a button!')}
-                title="Tìm"
-                border
-              >
-                <Text>Tìm kiếm</Text>
-              </TouchableOpacity>
-            </View>
-          ),
+          headerRight: () => null,
         }}
         name="Menu"
         component={Menu}
@@ -213,7 +190,13 @@ export default function App() {
             }}
           >
             <Stack.Screen name="StartScreen" component={StartScreen} />
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen
+              name="LoginScreen"
+              component={LoginScreen}
+              options={{
+                headerLeft: () => null,
+              }}
+            />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
             <Stack.Screen name="AllProduct" component={AllProduct} />

@@ -1,6 +1,6 @@
 export const apiUrl =
   process.env.NODE_ENV !== 'production'
-    ? 'http://10.0.2.2:5000/api'
+    ? 'http://10.0.2.2:5000/'
     : 'https://sleepy-inlet-56101.herokuapp.com/api'
 
 export const LOCAL_STORAGE_TOKEN_NAME = 'learnit-mern'
