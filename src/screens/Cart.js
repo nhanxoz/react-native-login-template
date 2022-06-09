@@ -12,62 +12,12 @@ import Axios from 'axios'
 import CartItem2 from '../components/CartItem2'
 import { AuthContext } from '../context/AuthContext'
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d74',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d75',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d6',
-    title: 'Third Item',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28b1',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f62',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d73',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d4',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d45',
-    title: 'Third Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e293',
-    title: 'Third Item',
-  },
-]
+
 
 export default function Cart({ navigation }) {
   const [selectedId, setSelectedId] = useState(null)
-  const { authState } = React.useContext(AuthContext)
-  const [list, setList] = useState(null)
-  const [carts, setCarts] = useState(null)
+  const { authState, carts, setCarts } = React.useContext(AuthContext)
+
   useEffect(() => {
     console.log(authState)
     Axios.get(`http://10.0.2.2:5000/api/user/cart?id=${authState.user['_W']}`)
@@ -76,6 +26,17 @@ export default function Cart({ navigation }) {
   }, [])
 
   const deleteItem = (item) => {
+    const requestOptions = {
+      method: 'POST',
+    }
+
+    fetch(
+      `http://10.0.2.2:5000/api/user/deleteCartItem?id=${authState.user['_W']}&idItem=${item.ID}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log('error', error))
     setCarts(carts.filter((i) => i.ID !== item.ID))
   }
   const tang = (item, sl) => {
@@ -124,9 +85,11 @@ export default function Cart({ navigation }) {
           OK324
         </Button>
         <Button
-          onPress={() => {
-            navigation.navigate('Payment')
-          }}
+          onPress={() =>
+            !carts.reduce((a, b) => a + b.PromotionPrice * b.Quantity, 0)
+              ? alert('Bạn chưa đặt món')
+              : navigation.navigate('Thanh toán')
+          }
           title="Thanh toán"
           color="red"
         >

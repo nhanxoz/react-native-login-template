@@ -4,8 +4,34 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { WebView } from 'react-native-webview'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-const testURI = 'https://google.com'
-export default function ProfileDetail({ navigation }) {
+function timeConverter(UNIX_timestamp) {
+  const a = new Date(UNIX_timestamp * 1000)
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+  var year = a.getFullYear()
+  var month = months[a.getMonth()]
+  var date = a.getDate()
+  var hour = a.getHours()
+  var min = a.getMinutes()
+  var sec = a.getSeconds()
+  var time = date + ' ' + month + ' ' + year
+  return time
+}
+
+export default function ProfileDetail({ navigation, route }) {
+  const { user } = route.params
   const { height, width } = Dimensions.get('window')
   return (
     <View
@@ -20,7 +46,7 @@ export default function ProfileDetail({ navigation }) {
         source={require('../assets/phu.jpg')}
       />
 
-      <Text style={{ fontSize: 32 }}>Phú Phạm Văn</Text>
+      <Text style={{ fontSize: 32 }}>{user.FullName}</Text>
       <View
         style={{
           marginTop: 32,
@@ -29,20 +55,20 @@ export default function ProfileDetail({ navigation }) {
         }}
       >
         <TouchableOpacity style={styles.row}>
-          <Text style={{ fontSize: 20 }}>Tên đăng nhập: </Text>
-          <Text style={{ fontSize: 20 }}>phufava</Text>
+          <Text style={{ fontSize: 20 }}>Email: </Text>
+          <Text style={{ fontSize: 20 }}>{user.Email}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.row}>
           <Text style={{ fontSize: 20 }}>Họ tên: </Text>
-          <Text style={{ fontSize: 20 }}>Phú Phạm Văn</Text>
+          <Text style={{ fontSize: 20 }}>{user.FullName}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.row}>
           <Text style={{ fontSize: 20 }}>Ngày sinh</Text>
-          <Text style={{ fontSize: 20 }}>20/9/2000</Text>
+          <Text style={{ fontSize: 20 }}>{timeConverter(user.BirthDay)}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.row}>
-          <Text style={{ fontSize: 20 }}>Email</Text>
-          <Text style={{ fontSize: 20 }}>phufava@gmail.com</Text>
+          <Text style={{ fontSize: 20 }}>Địa chỉ</Text>
+          <Text style={{ fontSize: 20 }}>{user.Address}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

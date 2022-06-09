@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useEffect } from 'react'
+import React, { createContext, useReducer, useEffect, useState } from 'react'
 import axios from 'axios'
 
 import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from './constant'
@@ -10,6 +10,9 @@ import { authReducer } from '../reducers/authReducer'
 export const AuthContext = createContext()
 
 const AuthContextProvider = ({ children }) => {
+  const [carts, setCarts] = useState([{ PromotionPrice: 0 }])
+  const [DATA_2, setData2] = useState(null)
+  const [DATA, setData] = useState(null)
   const [authState, dispatch] = useReducer(authReducer, {
     authLoading: true,
     isAuthenticated: false,
@@ -45,7 +48,7 @@ const AuthContextProvider = ({ children }) => {
             payload: {
               isAuthenticated: true,
               user: axios
-                .get('http://10.0.2.2:5000/api/user?email=Nhan9ckl1@gmail.com')
+                .get('http://10.0.2.2:5000/api/user?email=' + email.value)
                 .then((data1) => {
                   console.log(data1.data.data[0].Id)
                   return data1.data.data[0].Id
@@ -89,7 +92,19 @@ const AuthContextProvider = ({ children }) => {
   }
 
   // Context data
-  const authContextData = { loginUser, registerUser, logoutUser, authState }
+  const authContextData = {
+    loginUser,
+    registerUser,
+    logoutUser,
+    authState,
+    carts,
+    setCarts,
+    DATA_2,
+    setData2,
+    DATA,
+    setData,
+    dispatch,
+  }
 
   // Return provider
   return (

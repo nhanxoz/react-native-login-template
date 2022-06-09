@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   FlatList,
   SafeAreaView,
@@ -12,6 +12,7 @@ import {
 import Axios from 'axios'
 import CartItem from '../components/CartItem'
 import CartegoryItem from '../components/CategoryItem'
+import { AuthContext } from '../context/AuthContext'
 
 const requestOptions = {
   method: 'GET',
@@ -52,36 +53,37 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 export default function Menu({ navigation }) {
   const [selectedId, setSelectedId] = useState(null)
   const [text, onChangeText] = useState(null)
-  const [DATA, setData] = useState(null)
-  const [DATA_2, setData2] = useState(null)
+  const [press, setPress] = useState(true)
+
+  const { DATA_2, setData2, DATA, setData } = useContext(AuthContext)
   const [cat, setCat] = useState(0)
   useEffect(() => {
     Axios.get('http://10.0.2.2:5000/api/user/food')
       .then((data1) => {
         setData(data1.data.data)
+        setData2(data1.data.data)
       })
       .catch((error) => console.error(error))
   }, [])
   useEffect(
     () =>
       cat === 0
-        ? Axios.get('http://10.0.2.2:5000/api/user/food').then((data1) => {
-            setData2(data1.data.data)
-          })
+        ? setData2(DATA)
         : setData2(DATA.filter((i) => i.CategoryID === cat)),
-    [cat]
+    [press]
   )
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
         onPress={() => {
           setCat(item.id)
+          setPress(!press)
         }}
       >
         <CartegoryItem
           title={item.title}
           backgroundColor={item.color}
-          color={item.id == 2 ? '#000' : '#fff'}
+          color={item.id === 2 ? '#000' : '#fff'}
         />
       </TouchableOpacity>
     )
@@ -104,29 +106,6 @@ export default function Menu({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeText}
-          placeholder="nhập tên món"
-          value={text}
-        />
-        <TouchableOpacity
-          style={{
-            marginVertical: 10,
-            marginRight: 5,
-            padding: 5,
-            backgroundColor: '#2cfc03',
-            justifyContent: 'center',
-            borderRadius: 10,
-          }}
-          onPress={() => alert('This is a button!')}
-          title="Tìm"
-          border
-        >
-          <Text>Tìm kiếm</Text>
-        </TouchableOpacity>
-      </View>
       <View style={{ flex: 2 }}>
         <FlatList
           data={Category}

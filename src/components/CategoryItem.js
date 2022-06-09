@@ -10,7 +10,7 @@ export default function CartegoryItem({ title, backgroundColor, color }) {
         flexDirection: 'column',
         padding: 20,
         alignItems: 'center',
-
+        width: 150,
         margin: 10,
         borderRadius: 10,
       }}

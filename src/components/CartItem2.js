@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   View,
   Image,
@@ -7,10 +7,28 @@ import {
   Text,
   TextInput,
 } from 'react-native'
+import { AuthContext } from '../context/AuthContext'
 
 export default function CartItem2({ item, delet, tang }) {
   const [number, onChangeNumber] = React.useState(String(item.Quantity))
-
+  const { authState } = useContext(AuthContext)
+  React.useEffect(() => {
+    onChangeNumber(String(item.Quantity))
+    const requestOptions = {
+      method: 'POST',
+      redirect: 'follow',
+    }
+    console.log(
+      `http://localhost:5000/api/user/updateQuantity?id=${authState.user['_W']}&idItem=${item.ID}&nQuantity=${item.Quantity}`
+    )
+    fetch(
+      `http://10.0.2.2:5000/api/user/updateQuantity?id=${authState.user['_W']}&idItem=${item.ID}&nQuantity=${item.Quantity}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log('error', error))
+  }, [item.Quantity])
   return (
     <View style={styles.container}>
       <TouchableOpacity>
@@ -41,8 +59,22 @@ export default function CartItem2({ item, delet, tang }) {
           </TouchableOpacity>
           <TextInput
             style={styles.input}
-            onChangeText={onChangeNumber}
-            value={String(item.Quantity)}
+            onChangeText={(text) => {
+              onChangeNumber(text)
+              const requestOptions = {
+                method: 'POST',
+                redirect: 'follow',
+              }
+
+              fetch(
+                `http://localhost:5000/api/user/updateQuantity?id=${authState.user['_W']}&idItem=${item.Name}&nQuantity=${text}`,
+                requestOptions
+              )
+                .then((response) => response.text())
+                .then((result) => console.log(result))
+                .catch((error) => console.log('error', error))
+            }}
+            value={number}
             keyboardType="numeric"
           />
           <TouchableOpacity style={styles.button} onPress={() => tang(item, 1)}>

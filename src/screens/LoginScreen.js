@@ -28,7 +28,7 @@ export default function LoginScreen({ navigation }) {
         }
 
         fetch(
-          'https://localhost:44396/api/user?email=Nhan9ckl1@gmail.com',
+          'https://localhost:44396/api/user?email=' + email.value,
           requestOptions
         )
           .then((response) => response.text())

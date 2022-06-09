@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Provider } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {
@@ -14,7 +14,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { theme } from './src/core/theme'
-import AuthContextProvider from './src/context/AuthContext'
+import AuthContextProvider, { AuthContext } from './src/context/AuthContext'
 
 import {
   StartScreen,
@@ -40,10 +40,10 @@ const StackHistory = createStackNavigator()
 const StackProfile = createStackNavigator()
 const SBlog = createStackNavigator()
 const MDashboard = () => (
-  <SBlog.Navigator initialRouteName="Dashboard">
+  <SBlog.Navigator initialRouteName="Trang chủ">
     <SBlog.Screen
       options={{ tabBarLabel: 'Chào mừng tới thiên đường ẩm thực' }}
-      name="Dashboard"
+      name="Trang chủ"
       component={Dashboard}
     />
     <SBlog.Screen
@@ -58,12 +58,12 @@ const CartPaymentStack = () => (
   <StackCart.Navigator initialRouteName="History">
     <StackCart.Screen
       options={{ tabBarLabel: 'Cart' }}
-      name="Cart"
+      name="Giỏ hàng"
       component={Cart}
     />
     <StackCart.Screen
-      options={{ tabBarLabel: 'Payment' }}
-      name="Payment"
+      options={{ tabBarLabel: 'Thanh toán' }}
+      name="Thanh toán"
       component={Payment}
     />
   </StackCart.Navigator>
@@ -75,7 +75,7 @@ const ProfileInfoStack = () => (
   <StackProfile.Navigator initialRouteName="History">
     <StackProfile.Screen
       options={{ tabBarLabel: 'Profile' }}
-      name="Profile"
+      name="Thông tin tài khoản"
       component={Profile}
     />
     <StackProfile.Screen
@@ -88,10 +88,21 @@ const ProfileInfoStack = () => (
       name="Chỉnh sửa thông tin"
       component={UpdateProfile}
     />
+    <StackProfile.Screen
+      options={{ tabBarLabel: 'HistoryOrder' }}
+      name="Lịch sử đặt món"
+      component={HistoryOrder}
+    />
+    <StackProfile.Screen
+      options={{ tabBarLabel: 'HistoryDetail' }}
+      name="Chi tiết đơn hàng"
+      component={HistoryDetail}
+    />
   </StackProfile.Navigator>
 )
 
 const MenuFoodStack = () => {
+  const { DATA, setData2 } = useContext(AuthContext)
   const [text, onChangeText] = React.useState(null)
   return (
     <MenuStack.Navigator initialRouteName="Menu">
@@ -99,7 +110,35 @@ const MenuFoodStack = () => {
         options={{
           tabBarLabel: 'Menu',
 
-          headerRight: () => null,
+          headerRight: () => {
+            return (
+              <View style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={onChangeText}
+                  placeholder="nhập tên món"
+                  value={text}
+                />
+                <TouchableOpacity
+                  style={{
+                    marginVertical: 10,
+                    marginRight: 5,
+                    padding: 5,
+                    backgroundColor: '#2cfc03',
+                    justifyContent: 'center',
+                    borderRadius: 10,
+                  }}
+                  onPress={() => {
+                    setData2(DATA.filter((i) => i.Name.indexOf(text) >= 0))
+                  }}
+                  title="Tìm"
+                  border
+                >
+                  <Text>Tìm kiếm</Text>
+                </TouchableOpacity>
+              </View>
+            )
+          },
         }}
         name="Menu"
         component={Menu}
@@ -138,12 +177,12 @@ const TabNavigator = () => (
   >
     <BottomTab.Screen
       options={{
-        tabBarLabel: 'Home',
+        tabBarLabel: 'Trang chủ',
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="home" color={color} size={size} />
         ),
       }}
-      name="Dashboard"
+      name="Trang chủ"
       component={MDashboard}
     />
     <BottomTab.Screen
@@ -158,22 +197,22 @@ const TabNavigator = () => (
     />
     <BottomTab.Screen
       options={{
-        tabBarLabel: 'Cart',
+        tabBarLabel: 'Giỏ hàng',
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="cart" color={color} size={size} />
         ),
       }}
-      name="Cart"
+      name="Giỏ hàng"
       component={CartPaymentStack}
     />
     <BottomTab.Screen
       options={{
-        tabBarLabel: 'Profile',
+        tabBarLabel: 'Thông tin tài khoản',
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         ),
       }}
-      name="Profile"
+      name="Thông tin tài khoản"
       component={ProfileInfoStack}
     />
   </BottomTab.Navigator>
@@ -218,5 +257,6 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    borderRadius: 20,
   },
 })
