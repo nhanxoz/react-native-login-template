@@ -15,21 +15,20 @@ export default function Profile({ navigation }) {
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
 
-    const raw = JSON.stringify({
-      Id: authState.user['_W'],
-    })
-
     const requestOptions = {
-      method: 'POST',
+      method: 'GET',
       headers: myHeaders,
-      body: raw,
+
       redirect: 'follow',
     }
 
-    fetch('http://10.0.2.2:5000/api/user', requestOptions)
+    fetch(
+      'http://10.0.2.2:8080/apiFood/userInfor?id_user=' + authState.user,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
-        setUser(result.data)
+        setUser(result)
       })
       .catch((error) => console.log('error', error))
   }, [])
@@ -47,7 +46,7 @@ export default function Profile({ navigation }) {
         source={require('../assets/phu.jpg')}
       />
 
-      <Text style={{ fontSize: 32 }}>{user.FullName}</Text>
+      <Text style={{ fontSize: 32 }}>{user.fullName}</Text>
       <View
         style={{
           marginTop: 32,
