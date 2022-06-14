@@ -71,13 +71,13 @@ export default function Blogs() {
   const [blog, setBlog] = React.useState(null)
   React.useEffect(() => {
     axios
-      .get('http://10.0.2.2:5000/api/blog')
+      .get('http://10.0.2.2:8080/apiFood/blogs1')
       .then((res) => setBlog(res.data.data))
   }, [])
   const [selectedId, setSelectedId] = React.useState(null)
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => setSelectedId(item.ID)}>
+      <TouchableOpacity onPress={() => setSelectedId(item.id)}>
         <BlogCard item={item} />
       </TouchableOpacity>
     )
@@ -106,7 +106,11 @@ export default function Blogs() {
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          onPress={() => setIsShowWebView(!isShowWebView)}
+          onPress={() => {
+            setIsShowWebView(!isShowWebView)
+            console.log('-----------------------')
+            console.log(selectedId)
+          }}
         >
           <Text>Xem bài viết</Text>
         </TouchableOpacity>
@@ -115,7 +119,7 @@ export default function Blogs() {
           <WebView
             style={{ height: height, width: width }}
             containerStyle={{ height: height, width: width }}
-            source={{ html: blog[selectedId].Content }}
+            source={{ html: blog[selectedId - 1].content }}
             renderError={(error) => (
               <View style={{ flex: 1 }}>
                 <Text>{error}</Text>

@@ -21,19 +21,12 @@ export default function LoginScreen({ navigation }) {
     try {
       const loginData = await loginUser({ email, password })
 
-      if (loginData.success && loginData.accessToken !== null) {
+      if (loginData.accessToken !== null) {
         const requestOptions = {
           method: 'GET',
           redirect: 'follow',
         }
 
-        fetch(
-          'https://localhost:44396/api/user?email=' + email.value,
-          requestOptions
-        )
-          .then((response) => response.text())
-          .then((result) => console.log(result))
-          .catch((error) => console.log('error', error))
         navigation.reset({
           index: 0,
           routes: [

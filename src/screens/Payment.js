@@ -55,12 +55,12 @@ export default function Payment({ navigation }) {
       >
         <Image
           source={{
-            uri: `http://10.0.2.2:5000/Content/food/${item.Alias}_1.jpg`,
+            uri: `http://10.0.2.2:8080/downloadFile/${item.image}`,
           }}
           style={{ width: 80, height: 80 }}
         />
         <View style={{ width: '80%', paddingHorizontal: 20 }}>
-          <Text style={{ fontWeight: 'bold' }}>{item.Name}</Text>
+          <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
           <View
             style={{
               display: 'flex',
@@ -68,8 +68,8 @@ export default function Payment({ navigation }) {
               justifyContent: 'space-between',
             }}
           >
-            <Text>{formatConcurrency(item.PromotionPrice)} VND</Text>
-            <Text>x{item.Quantity}</Text>
+            <Text>{formatConcurrency(item.promotionPrice)} VND</Text>
+            <Text>x{item.quantity}</Text>
           </View>
         </View>
       </View>
@@ -93,7 +93,7 @@ export default function Payment({ navigation }) {
       <View style={styles.container}>
         <Text>
           Tổng tiền{' '}
-          {carts.reduce((a, b) => a + b.PromotionPrice * b.Quantity, 0)} VND
+          {carts.reduce((a, b) => a + b.promotionPrice * b.quantity, 0)} VND
         </Text>
       </View>
       <View style={styles.container}>
@@ -113,19 +113,26 @@ export default function Payment({ navigation }) {
         <Button
           title="Đặt hàng"
           onPress={() => {
-            const formdata = new FormData()
-            formdata.append('id', authState.user['_W'])
-            formdata.append('name', ten)
-            formdata.append('address', diachi)
+            const myHeaders1 = new Headers()
+
+            myHeaders1.append('Content-Type', 'application/json')
+
+            const raw = JSON.stringify({
+              name: ten,
+              address: diachi,
+            })
 
             const requestOptions = {
               method: 'POST',
-              body: formdata,
+              headers: myHeaders1,
+              body: raw,
               redirect: 'follow',
             }
-
+            console.log(
+              `http://10.0.2.2:8080/apiFood/paymentFromCart?user_id=${authState.user}`
+            )
             fetch(
-              'http://10.0.2.2:5000/api/user/paymentFromCart',
+              `http://10.0.2.2:8080/apiFood/paymentFromCart?user_id=${authState.user}`,
               requestOptions
             )
               .then((response) => response.text())

@@ -10,39 +10,37 @@ import {
 import { AuthContext } from '../context/AuthContext'
 
 export default function CartItem2({ item, delet, tang }) {
-  const [number, onChangeNumber] = React.useState(String(item.Quantity))
+  const [number, onChangeNumber] = React.useState(String(item.quantity))
   const { authState } = useContext(AuthContext)
   React.useEffect(() => {
-    onChangeNumber(String(item.Quantity))
+    onChangeNumber(String(item.quantity))
     const requestOptions = {
       method: 'POST',
       redirect: 'follow',
     }
-    console.log(
-      `http://localhost:5000/api/user/updateQuantity?id=${authState.user['_W']}&idItem=${item.ID}&nQuantity=${item.Quantity}`
-    )
+
     fetch(
-      `http://10.0.2.2:5000/api/user/updateQuantity?id=${authState.user['_W']}&idItem=${item.ID}&nQuantity=${item.Quantity}`,
+      `http://10.0.2.2:8080/apiFood/updateCart?id_user=${authState.user}&id_food=${item.id}&quantity=${item.Quantity}`,
       requestOptions
     )
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log('error', error))
-  }, [item.Quantity])
+  }, [item.quantity])
   return (
     <View style={styles.container}>
       <TouchableOpacity>
         <Image
           style={{ width: 100, height: 100 }}
           source={{
-            uri: `http://10.0.2.2:5000/Content/food/${item.Alias}_1.jpg`,
+            uri: `http://10.0.2.2:8080/downloadFile/${item.image}`,
           }}
         />
       </TouchableOpacity>
       <View style={styles.content}>
-        <Text>{item.Name}</Text>
+        <Text>{item.name}</Text>
         <View>
-          <Text>{item.PromotionPrice} VND</Text>
+          <Text>{item.promotionPrice} VND</Text>
         </View>
         <View
           style={{
@@ -67,7 +65,7 @@ export default function CartItem2({ item, delet, tang }) {
               }
 
               fetch(
-                `http://localhost:5000/api/user/updateQuantity?id=${authState.user['_W']}&idItem=${item.Name}&nQuantity=${text}`,
+                `http://localhost:5000/api/user/updateQuantity?id=${authState.user}&idItem=${item.name}&nQuantity=${text}`,
                 requestOptions
               )
                 .then((response) => response.text())

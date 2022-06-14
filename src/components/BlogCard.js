@@ -11,7 +11,7 @@ export default function BlogCard({ item }) {
         />
       </View>
       <View style={styles.text}>
-        <Text style={{ color: '#fff', fontWeight: 'bold' }}>{item.Name}</Text>
+        <Text style={{ color: '#fff', fontWeight: 'bold' }}>{item.name}</Text>
       </View>
     </View>
   )

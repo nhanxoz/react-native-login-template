@@ -55,20 +55,21 @@ export default function ProfileDetail({ navigation, route }) {
         }}
       >
         <TouchableOpacity style={styles.row}>
+          <Text style={{ fontSize: 20 }}>Mã khách hàng</Text>
+          <Text style={{ fontSize: 20 }}>{user.id}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.row}>
           <Text style={{ fontSize: 20 }}>Email: </Text>
-          <Text style={{ fontSize: 20 }}>{user.Email}</Text>
+          <Text style={{ fontSize: 20 }}>{user.email}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.row}>
           <Text style={{ fontSize: 20 }}>Họ tên: </Text>
-          <Text style={{ fontSize: 20 }}>{user.FullName}</Text>
+          <Text style={{ fontSize: 20 }}>{user.fullName}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.row}>
-          <Text style={{ fontSize: 20 }}>Ngày sinh</Text>
-          <Text style={{ fontSize: 20 }}>{timeConverter(user.BirthDay)}</Text>
-        </TouchableOpacity>
+
         <TouchableOpacity style={styles.row}>
           <Text style={{ fontSize: 20 }}>Địa chỉ</Text>
-          <Text style={{ fontSize: 20 }}>{user.Address}</Text>
+          <Text style={{ fontSize: 20 }}>{user.address}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

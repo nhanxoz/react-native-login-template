@@ -9,20 +9,20 @@ export default function CartItem({ item, onPress }) {
         <Image
           style={styles.image}
           source={{
-            uri: `http://10.0.2.2:5000/Content/food/${item.Alias}_1.jpg`,
+            uri: `http://10.0.2.2:8080/downloadFile/${item.image}`,
           }}
         />
       </View>
       <View style={styles.text}>
         <Text>
-          {item.Name.length > 17
-            ? item.Name.substring(0, 17) + '...'
-            : item.Name}
+          {item.name.length > 17
+            ? item.name.substring(0, 17) + '...'
+            : item.name}
         </Text>
       </View>
       <View style={{ marginTop: 10, color: 'red' }}>
         <Text style={{ color: 'red', fontSize: 20 }}>
-          {renderCost(item.PromotionPrice)} VND
+          {renderCost(item.promotionPrice)} VND
         </Text>
       </View>
     </TouchableOpacity>

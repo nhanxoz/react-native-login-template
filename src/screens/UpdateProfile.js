@@ -47,7 +47,7 @@ export default function UpdateProfile({ navigation }) {
     myHeaders.append('Content-Type', 'application/json')
 
     const raw = JSON.stringify({
-      Id: authState.user['_W'],
+      Id: authState.user,
       FullName: name.value,
       Address: add.value,
       Email: email.value,

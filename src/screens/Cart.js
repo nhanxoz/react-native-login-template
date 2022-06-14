@@ -20,30 +20,34 @@ export default function Cart({ navigation }) {
 
   useEffect(() => {
     console.log(authState)
-    Axios.get(`http://10.0.2.2:5000/api/user/cart?id=${authState.user['_W']}`)
-      .then((r) => r.data.data)
+    Axios.get(`http://10.0.2.2:8080/apiFood/cart?id_user=${authState.user}`)
+      .then((r) => {
+        console.log(r.data)
+        return r.data
+      })
       .then((d) => setCarts(d))
   }, [])
 
   const deleteItem = (item) => {
     const requestOptions = {
-      method: 'POST',
+      method: 'DELETE',
     }
 
     fetch(
-      `http://10.0.2.2:5000/api/user/deleteCartItem?id=${authState.user['_W']}&idItem=${item.ID}`,
+      `http://10.0.2.2:8080/apiFood/delCartItem?id_user=${authState.user}&id_food=${item.id}`,
       requestOptions
     )
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log('error', error))
-    setCarts(carts.filter((i) => i.ID !== item.ID))
+    setCarts(carts.filter((i) => i.id !== item.id))
   }
   const tang = (item, sl) => {
+    console.log(item.id)
     const newcart = carts
-    const ide = newcart.findIndex((obj) => obj.ID === item.ID)
-    newcart[ide].Quantity = item.Quantity + sl < 1 ? 1 : item.Quantity + sl
-    console.log(newcart)
+    const ide = newcart.findIndex((obj) => obj.id === item.id)
+    newcart[ide].quantity = item.quantity + sl < 1 ? 1 : item.quantity + sl
+
     setCarts([...newcart])
   }
 
@@ -74,7 +78,7 @@ export default function Cart({ navigation }) {
       <View style={{ flex: 1 }}>
         <Text>
           Tổng tiền:{' '}
-          {carts.reduce((a, b) => a + b.PromotionPrice * b.Quantity, 0)} VND
+          {carts.reduce((a, b) => a + b.promotionPrice * b.quantity, 0)} VND
         </Text>
         <Button
           onPress={() => {
@@ -86,7 +90,7 @@ export default function Cart({ navigation }) {
         </Button>
         <Button
           onPress={() =>
-            !carts.reduce((a, b) => a + b.PromotionPrice * b.Quantity, 0)
+            !carts.reduce((a, b) => a + b.promotionPrice * b.quantity, 0)
               ? alert('Bạn chưa đặt món')
               : navigation.navigate('Thanh toán')
           }

@@ -28,10 +28,10 @@ const AuthContextProvider = ({ children }) => {
       myHeaders.append('Content-Type', 'application/json')
 
       const raw = JSON.stringify({
-        Email: email.value,
-        Password: password.value,
+        username: email.value,
+        password: password.value,
       })
-      console.log(raw)
+
       const requestOptions = {
         method: 'POST',
         headers: myHeaders,
@@ -40,20 +40,15 @@ const AuthContextProvider = ({ children }) => {
         credentials: 'include',
       }
 
-      return fetch(`${apiUrl}/Account/Login`, requestOptions)
+      return fetch(`http://10.0.2.2:8080/api/auth/signin`, requestOptions)
         .then((response) => response.json())
         .then((result) => {
+          console.log(result)
           dispatch({
             type: 'SET_AUTH',
             payload: {
               isAuthenticated: true,
-              user: axios
-                .get('http://10.0.2.2:5000/api/user?email=' + email.value)
-                .then((data1) => {
-                  console.log(data1.data.data[0].Id)
-                  return data1.data.data[0].Id
-                })
-                .catch((error) => console.error(error)),
+              user: result.id,
             },
           })
           console.log(authState)

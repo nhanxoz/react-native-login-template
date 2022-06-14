@@ -36,7 +36,7 @@ export default function FoodDetail({ route }) {
     }
 
     fetch(
-      `http://10.0.2.2:5000/api/food/comment?idfood=${item.ID}`,
+      `http://10.0.2.2:5000/api/food/comment?idfood=${item.id}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -46,9 +46,9 @@ export default function FoodDetail({ route }) {
       .catch((error) => console.log('error', error))
   }, [])
   const images = [
-    `http://10.0.2.2:5000/Content/food/${item.Alias}_1.jpg`,
-    `http://10.0.2.2:5000/Content/food/${item.Alias}_2.jpg`,
-    `http://10.0.2.2:5000/Content/food/${item.Alias}_3.jpg`,
+    `http://10.0.2.2:8080/downloadFile/${item.image}`,
+    `http://10.0.2.2:8080/downloadFile/${item.alias}_2.jpg`,
+    `http://10.0.2.2:8080/downloadFile/${item.alias}_3.jpg`,
   ]
   const renderPage = (image, index) => {
     return (
@@ -58,7 +58,6 @@ export default function FoodDetail({ route }) {
     )
   }
   const renderComment = () => {
-    console.log(comments)
     return comments.map((value, index) => (
       <View
         style={{ backgroundColor: '#f5f3f0', padding: 10, margin: 1 }}
@@ -86,7 +85,7 @@ export default function FoodDetail({ route }) {
             padding: 10,
           }}
         >
-          <Text style={{ fontSize: 30 }}>{item.Name}</Text>
+          <Text style={{ fontSize: 30 }}>{item.name}</Text>
           <Text
             style={{
               fontSize: 20,
@@ -94,10 +93,10 @@ export default function FoodDetail({ route }) {
               textDecorationStyle: 'solid',
             }}
           >
-            Giá gốc: {item.OriginPrice}VNĐ
+            Giá gốc: {item.originPrice}VNĐ
           </Text>
           <Text style={{ fontSize: 20, color: 'red' }}>
-            Giá khuyến mãi: {item.PromotionPrice}VNĐ
+            Giá khuyến mãi: {item.promotionPrice}VNĐ
           </Text>
         </View>
         <TouchableOpacity
@@ -109,9 +108,10 @@ export default function FoodDetail({ route }) {
             margin: 5,
           }}
           onPress={() => {
+            console.log(authState)
             const formdata = new FormData()
-            formdata.append('id', authState.user['_W'])
-            formdata.append('item', item.ID)
+            formdata.append('id', authState.user)
+            formdata.append('item', item.id)
 
             const requestOptions = {
               method: 'POST',
@@ -119,16 +119,20 @@ export default function FoodDetail({ route }) {
               redirect: 'follow',
             }
 
-            fetch('http://10.0.2.2:5000/api/user/addcart', requestOptions)
+            fetch(
+              `http://10.0.2.2:8080/apiFood/addCart?id_user=${authState.user}&id_food=${item.id}`,
+              requestOptions
+            )
               .then((response) => response.text())
               .then((result) => console.log(result))
               .catch((error) => console.log('error', error))
-            const id = carts.findIndex((i) => i.Name === item.Name)
+            const id = carts.findIndex((i) => i.name === item.name)
+            console.log(item)
             if (id !== -1) {
-              carts[id].Quantity += 1
+              carts[id].quantity += 1
               setCarts([...carts])
             } else {
-              setCarts([...carts, { ...item, Quantity: 1 }])
+              setCarts([...carts, { ...item, quantity: 1 }])
             }
             alert('Đã thêm vào giỏ hàng')
           }}

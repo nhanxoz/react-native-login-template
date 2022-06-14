@@ -10,13 +10,13 @@ export default function HistoryDetail({ route }) {
     const requestOptions = {
       method: 'GET',
     }
-
+    console.log(item.id)
     fetch(
-      'http://10.0.2.2:5000/api/user/orderDetail?id=' + item.ID,
+      'http://10.0.2.2:8080/apiFood/orderShort?id_order=' + item.id,
       requestOptions
     )
       .then((response) => response.json())
-      .then((result) => setOrder(result.data))
+      .then((result) => setOrder(result))
       .catch((error) => console.log('error', error))
   }, [])
   const formatConcurrency = (number) => {
@@ -36,12 +36,12 @@ export default function HistoryDetail({ route }) {
       >
         <Image
           source={{
-            uri: `http://10.0.2.2:5000/Content/food/${item_.Alias}_1.jpg`,
+            uri: `http://10.0.2.2:8080/downloadFile/${item_.image}`,
           }}
           style={{ width: 80, height: 80 }}
         />
         <View style={{ width: '80%', paddingHorizontal: 20 }}>
-          <Text style={{ fontWeight: 'bold' }}>{item_.Name}</Text>
+          <Text style={{ fontWeight: 'bold' }}>{item_.name}</Text>
           <View
             style={{
               display: 'flex',
@@ -49,8 +49,8 @@ export default function HistoryDetail({ route }) {
               justifyContent: 'space-between',
             }}
           >
-            <Text>{formatConcurrency(item_.PromotionPrice)} VND</Text>
-            <Text>x{item_.Quantity}</Text>
+            <Text>{formatConcurrency(item_.promotionPrice)} VND</Text>
+            <Text>x{item_.quantity}</Text>
           </View>
         </View>
       </View>
@@ -75,7 +75,7 @@ export default function HistoryDetail({ route }) {
         <Text>
           Tổng tiền{' '}
           {formatConcurrency(
-            order.reduce((a, b) => a + b.PromotionPrice * b.Quantity, 0)
+            order.reduce((a, b) => a + b.promotionPrice * b.quantity, 0)
           )}{' '}
           VND
         </Text>

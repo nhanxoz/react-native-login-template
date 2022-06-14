@@ -12,13 +12,15 @@ export default function HistoryOrder({ navigation }) {
       method: 'GET',
       redirect: 'follow',
     }
-
+    console.log(
+      `http://10.0.2.2:8080/apiFood/allOrder?user_id=${authState.user}`
+    )
     fetch(
-      `http://10.0.2.2:5000/api/user/orderUser?id=${authState.user['_W']}`,
+      `http://10.0.2.2:8080/apiFood/allOrder?user_id=${authState.user}`,
       requestOptions
     )
       .then((response) => response.json())
-      .then((result) => setOrders(result.data))
+      .then((result) => setOrders(result))
       .catch((error) => console.log('error', error))
   }, [])
   const formatConcurrency = (number) => {
@@ -38,11 +40,11 @@ export default function HistoryOrder({ navigation }) {
               justifyContent: 'space-between',
             }}
           >
-            <Text>Đơn hàng #{item.ID}</Text>
-            <Text>{arr_status[item.Status]}</Text>
+            <Text>Đơn hàng #{item.id}</Text>
+            <Text>{arr_status[item.status]}</Text>
           </View>
-          <Text>Các món ăn: {item.Listmon.map((i, id) => i + ',')}...</Text>
-          <Text>Giá trị: {formatConcurrency(item.ToTalPrice)} VNĐ</Text>
+          <Text>Phương thức thanh toán: {item.payment_method}</Text>
+          <Text>Giá trị: {formatConcurrency(item.total_price)} VNĐ</Text>
           <Button
             onPress={() => {
               navigation.navigate('Chi tiết đơn hàng', { item })

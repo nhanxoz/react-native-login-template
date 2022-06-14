@@ -58,7 +58,7 @@ export default function Menu({ navigation }) {
   const { DATA_2, setData2, DATA, setData } = useContext(AuthContext)
   const [cat, setCat] = useState(0)
   useEffect(() => {
-    Axios.get('http://10.0.2.2:5000/api/user/food')
+    Axios.get('http://10.0.2.2:8080/apiFood/foods')
       .then((data1) => {
         setData(data1.data.data)
         setData2(data1.data.data)
@@ -69,7 +69,7 @@ export default function Menu({ navigation }) {
     () =>
       cat === 0
         ? setData2(DATA)
-        : setData2(DATA.filter((i) => i.CategoryID === cat)),
+        : setData2(DATA.filter((i) => i.category.id == cat)),
     [press]
   )
   const renderItem = ({ item }) => {
@@ -119,7 +119,7 @@ export default function Menu({ navigation }) {
         <FlatList
           data={DATA_2}
           renderItem={renderItem2}
-          keyExtractor={(item) => item.ID}
+          keyExtractor={(item) => item.id}
           extraData={selectedId}
           numColumns={2}
         />
